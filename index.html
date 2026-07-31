@@ -1,4 +1,3 @@
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -6,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wubix</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { background-color: #000000; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
@@ -21,7 +22,7 @@
         </div>
         <div class="bg-white/10 px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1">
             <span class="text-gray-400">БАЛАНС</span>
-            <span class="text-white font-bold">164.6613 USDT</span>
+            <span class="text-white font-bold" id="header-balance">164.6613 USDT</span>
         </div>
     </header>
 
@@ -32,7 +33,7 @@
         <div id="screen-wallet" class="space-y-4">
             <div class="text-center py-4">
                 <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">ВАШ БАЛАНС</p>
-                <h1 class="text-4xl font-extrabold tracking-tight">164.6613 <span class="text-xl text-gray-400 font-normal">USDT</span></h1>
+                <h1 class="text-4xl font-extrabold tracking-tight"><span id="main-balance">164.6613</span> <span class="text-xl text-gray-400 font-normal">USDT</span></h1>
                 <p class="text-xs text-gray-500 mt-1">UQtu...nedR</p>
                 <div class="inline-block mt-3 px-3 py-1 rounded-full glass-card text-xs text-gray-300">
                     ● Wubix+
@@ -63,7 +64,7 @@
             </div>
 
             <!-- Замороженные транзакции -->
-            <div class="bg-red-950/30 border border-red-500/20 p-4 rounded-2xl space-y-1">
+            <div onclick="openSub('frozen')" class="bg-red-950/30 border border-red-500/20 p-4 rounded-2xl space-y-1 cursor-pointer hover:border-red-500/40 transition">
                 <p class="text-sm font-medium text-red-400 flex items-center space-x-1">
                     <span>❄️ Замороженные транзакции: 2 (321.3 USDT)</span>
                 </p>
@@ -71,14 +72,14 @@
             </div>
 
             <!-- Кнопки действий -->
-            <button class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl transition hover:bg-gray-200">
+            <button onclick="openModal('deposit')" class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl transition hover:bg-gray-200 active:scale-95">
                 Пополнить
             </button>
             <div class="grid grid-cols-2 gap-3">
-                <button class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">Вывести</button>
-                <button class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">Транзакции</button>
+                <button onclick="openModal('withdraw')" class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10 active:scale-95">Вывести</button>
+                <button onclick="openSub('transactions')" class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10 active:scale-95">Транзакции</button>
             </div>
-            <button class="w-full py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">
+            <button onclick="openSub('history')" class="w-full py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10 active:scale-95">
                 История операций
             </button>
         </div>
@@ -89,28 +90,28 @@
             <p class="text-xs text-gray-400 uppercase tracking-wider">ВЫБЕРИТЕ МОНЕТУ</p>
             
             <div class="grid grid-cols-2 gap-3">
-                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                <div onclick="startSwap('ETH', '200 USDT', '1%-1.9%')" class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30 active:scale-95 transition">
                     <div>
                         <h3 class="text-lg font-bold">ETH</h3>
                         <p class="text-xs text-gray-400 mt-1">1%-1.9%</p>
                     </div>
                     <span class="text-xs text-gray-500">200 USDT →</span>
                 </div>
-                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                <div onclick="startSwap('SOL', '100 USDT', '0.6%-1%')" class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30 active:scale-95 transition">
                     <div>
                         <h3 class="text-lg font-bold">SOL</h3>
                         <p class="text-xs text-gray-400 mt-1">0.6%-1%</p>
                     </div>
                     <span class="text-xs text-gray-500">100 USDT →</span>
                 </div>
-                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                <div onclick="startSwap('BNB', '100 USDT', '0.5%-1%')" class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30 active:scale-95 transition">
                     <div>
                         <h3 class="text-lg font-bold">BNB</h3>
                         <p class="text-xs text-gray-400 mt-1">0.5%-1%</p>
                     </div>
                     <span class="text-xs text-gray-500">100 USDT →</span>
                 </div>
-                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                <div onclick="startSwap('AAVE', '10 USDT', '0.06%-0.3%')" class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30 active:scale-95 transition">
                     <div>
                         <h3 class="text-lg font-bold">AAVE</h3>
                         <p class="text-xs text-gray-400 mt-1">0.06%-0.3%</p>
@@ -121,7 +122,7 @@
 
             <div class="mt-6">
                 <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">АКТИВНЫЕ ОПЕРАЦИИ</p>
-                <div class="text-center py-8 text-gray-500 text-sm">
+                <div id="active-operations-container" class="text-center py-8 text-gray-500 text-sm glass-card rounded-2xl">
                     Нет активных операций
                 </div>
             </div>
@@ -140,15 +141,15 @@
                     <span class="text-sm font-medium">Поддержка</span>
                     <span class="text-gray-500">›</span>
                 </button>
-                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                <button onclick="openSub('info')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
                     <span class="text-sm font-medium">Информация</span>
                     <span class="text-gray-500">›</span>
                 </button>
-                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                <button onclick="openSub('faq')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
                     <span class="text-sm font-medium">FAQ</span>
                     <span class="text-gray-500">›</span>
                 </button>
-                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                <button onclick="openSub('frozen')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
                     <span class="text-sm font-medium">Замороженные операции</span>
                     <span class="text-red-400 text-xs bg-red-950 px-2 py-0.5 rounded-full">2 ›</span>
                 </button>
@@ -156,9 +157,9 @@
 
             <p class="text-xs text-gray-400 uppercase tracking-wider mt-6 mb-2">ПРОФИЛЬ</p>
             <div class="glass-card p-4 rounded-2xl space-y-2 text-sm">
-                <div class="flex justify-between"><span class="text-gray-400">Имя</span> <span class="font-medium">YAMI @Xlebobulka</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Имя</span> <span id="profile-name" class="font-medium">YAMI @Xlebobulka</span></div>
                 <div class="flex justify-between"><span class="text-gray-400">ID в системе</span> <span class="font-medium">#K05EX</span></div>
-                <div class="flex justify-between"><span class="text-gray-400">Telegram ID</span> <span class="font-medium">1271961395</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Telegram ID</span> <span id="profile-tgid" class="font-medium">1271961395</span></div>
                 <div class="flex justify-between"><span class="text-gray-400">Статус</span> <span class="font-medium">Стандарт</span></div>
             </div>
         </div>
@@ -181,91 +182,213 @@
 
             <div class="glass-card p-4 rounded-2xl space-y-2">
                 <p class="text-xs text-gray-400 uppercase">РЕФЕРАЛЬНАЯ ССЫЛКА</p>
-                <p class="text-xs text-gray-300 break-all bg-black/30 p-2 rounded-xl">https://t.me/wubixcryptobot?start=ref_K05EX</p>
+                <p id="ref-link" class="text-xs text-gray-300 break-all bg-black/30 p-2 rounded-xl">https://t.me/wubixcryptobot?start=ref_K05EX</p>
             </div>
 
-            <button class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl">Скопировать ссылку</button>
-            <button class="w-full py-3.5 glass-card font-medium rounded-2xl">Поделиться в Telegram</button>
+            <button onclick="copyRefLink()" class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl active:scale-95 transition">Скопировать ссылку</button>
+        </div>
+
+        <!-- ПОДРАЗДЕЛ: ЗАМОРОЖЕННЫЕ -->
+        <div id="sub-frozen" class="space-y-4 hidden">
+            <button onclick="closeSub()" class="text-xs text-gray-400 mb-2 hover:text-white">‹ Назад</button>
+            <h2 class="text-xl font-bold">Замороженные операции</h2>
+            <div class="space-y-3">
+                <div class="glass-card p-4 rounded-2xl space-y-1 border border-red-500/30">
+                    <div class="flex justify-between"><span class="font-bold">TX #9841</span><span class="text-red-400">180.0 USDT</span></div>
+                    <p class="text-xs text-gray-400">Статус: Требуется верификация</p>
+                </div>
+                <div class="glass-card p-4 rounded-2xl space-y-1 border border-red-500/30">
+                    <div class="flex justify-between"><span class="font-bold">TX #9822</span><span class="text-red-400">141.3 USDT</span></div>
+                    <p class="text-xs text-gray-400">Статус: Подоззрение на риск</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПОДРАЗДЕЛ: ПОДДЕРЖКА / ИНФО / FAQ / ИСТОРИЯ -->
+        <div id="sub-generic" class="space-y-4 hidden">
+            <button onclick="closeSub()" class="text-xs text-gray-400 mb-2 hover:text-white">‹ Назад</button>
+            <h2 id="generic-title" class="text-xl font-bold">Раздел</h2>
+            <div id="generic-content" class="glass-card p-4 rounded-2xl text-sm text-gray-300 space-y-2">
+                <!-- Контент подставляется динамически -->
+            </div>
         </div>
 
     </main>
 
+    <!-- МОДАЛЬНОЕ ОКНО (Пополнение / Вывод) -->
+    <div id="modal-container" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card w-full max-w-xs p-5 rounded-3xl space-y-4">
+            <h3 id="modal-title" class="text-lg font-bold">Пополнение</h3>
+            <p id="modal-desc" class="text-xs text-gray-400">Введите сумму для пополнения счета (USDT)</p>
+            <input type="number" id="modal-input" placeholder="0.00" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-white/30">
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="closeModal()" class="py-3 glass-card font-medium rounded-xl text-sm">Отмена</button>
+                <button onclick="confirmModalAction()" class="py-3 bg-white text-black font-semibold rounded-xl text-sm">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Нижняя навигация -->
     <nav class="fixed bottom-0 left-0 right-0 glass-nav py-2 px-6 flex justify-around items-center z-50">
-        <button onclick="switchTab('swaps')" id="nav-swaps" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white">
+        <button onclick="switchTab('swaps')" id="nav-swaps" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4">
             <span class="text-xs">Связки</span>
         </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center space-y-1 text-white transition">
-            <span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Кошелёк</span>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center space-y-1 text-white transition py-1">
+            <span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium" id="nav-wallet-pill">Кошелёк</span>
         </button>
-        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white">
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4">
             <span class="text-xs">Прочее</span>
         </button>
     </nav>
 
     <script>
+        // Инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Подставляем реальные данные юзера Telegram, если они есть
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('profile-name').innerText = `${user.first_name || ''} @${user.username || 'user'}`;
+            document.getElementById('profile-tgid').innerText = user.id;
+        }
+
+        let currentModalType = '';
+        let activeTabName = 'wallet';
+
         function switchTab(tab) {
+            activeTabName = tab;
             document.getElementById('screen-wallet').classList.add('hidden');
             document.getElementById('screen-swaps').classList.add('hidden');
             document.getElementById('screen-more').classList.add('hidden');
             document.getElementById('sub-refs').classList.add('hidden');
+            document.getElementById('sub-frozen').classList.add('hidden');
+            document.getElementById('sub-generic').classList.add('hidden');
 
             document.getElementById('screen-' + tab).classList.remove('hidden');
+
+            // Стилизация кнопок навигации
+            ['swaps', 'wallet', 'more'].forEach(t => {
+                let btn = document.getElementById('nav-' + t);
+                if(t === tab) {
+                    if(t === 'wallet') {
+                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Кошелёк</span>';
+                    } else if(t === 'swaps') {
+                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Связки</span>';
+                    } else {
+                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Прочее</span>';
+                    }
+                    btn.className = "flex flex-col items-center space-y-1 text-white transition py-1";
+                } else {
+                    let name = t === 'swaps' ? 'Связки' : (t === 'wallet' ? 'Кошелёк' : 'Прочее');
+                    btn.innerHTML = `<span class="text-xs">${name}</span>`;
+                    btn.className = "flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4";
+                }
+            });
         }
 
         function openSub(sub) {
             document.getElementById('screen-more').classList.add('hidden');
+            document.getElementById('screen-wallet').classList.add('hidden');
+            
             if(sub === 'refs') {
                 document.getElementById('sub-refs').classList.remove('hidden');
+            } else if(sub === 'frozen') {
+                document.getElementById('sub-frozen').classList.remove('hidden');
+            } else {
+                let title = document.getElementById('generic-title');
+                let content = document.getElementById('generic-content');
+                
+                if(sub === 'support') {
+                    title.innerText = 'Поддержка';
+                    content.innerHTML = '<p>По всем вопросам обращайтесь к официальному оператору:</p><p class="text-white font-bold">@wubix_support</p>';
+                } else if(sub === 'info') {
+                    title.innerText = 'Информация';
+                    content.innerHTML = '<p>Wubix — автоматизированный сервис для проведения арбитражных криптовалютных связок нового поколения.</p>';
+                } else if(sub === 'faq') {
+                    title.innerText = 'FAQ';
+                    content.innerHTML = '<p class="font-bold text-white">Как начать работу?</p><p>Выберите связку во вкладке "Связки", следуйте инструкциям и запустите операцию.</p>';
+                } else if(sub === 'transactions' || sub === 'history') {
+                    title.innerText = 'История операций';
+                    content.innerHTML = '<div class="space-y-2"><div class="flex justify-between border-b border-white/5 pb-2"><span>Пополнение</span><span class="text-green-400">+100 USDT</span></div><div class="flex justify-between pb-2"><span>Связка ETH</span><span class="text-green-400">+3.4 USDT</span></div></div>';
+                }
+                document.getElementById('sub-generic').classList.remove('hidden');
             }
         }
 
         function closeSub() {
             document.getElementById('sub-refs').classList.add('hidden');
-            document.getElementById('screen-more').classList.remove('hidden');
+            document.getElementById('sub-frozen').classList.add('hidden');
+            document.getElementById('sub-generic').classList.add('hidden');
+            
+            if(activeTabName === 'wallet') {
+                document.getElementById('screen-wallet').classList.remove('hidden');
+            } else {
+                document.getElementById('screen-more').classList.remove('hidden');
+            }
         }
-    </script><script>
-    // Инициализация Telegram Web App
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // Разворачиваем на весь экран
 
-    // Пример получения реальных данных пользователя из Telegram
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-        console.log("Пользователь авторизован:", user.first_name);
-    }
-
-    // Логика переключения экранов по нижнему меню
-    function switchScreen(screenId, element) {
-        // Скрываем все экраны
-        document.querySelectorAll('main > div').forEach(div => {
-            div.classList.add('hidden');
-        });
-        
-        // Показываем нужный экран
-        document.getElementById(screenId).classList.remove('hidden');
-
-        // Управляем активной подсветкой кнопок в нижнем меню
-        document.querySelectorAll('nav button').forEach(btn => {
-            btn.classList.remove('text-white', 'bg-white/10');
-            btn.classList.add('text-gray-400');
-        });
-        element.classList.remove('text-gray-400');
-        element.classList.add('text-white', 'bg-white/10');
-    }
-
-    // Пример функции для реального пополнения или клика по кнопкам
-    function handleActionButton(actionType) {
-        if (actionType === 'deposit') {
-            tg.showAlert('Переход на шлюз оплаты...');
-            // Здесь можно сделать запрос на твой сервер для генерации инвойса
-        } else if (actionType === 'transactions') {
-            tg.HapticFeedback.impactOccurred('medium'); // Легкая вибрация телефона при клике
-            alert('Загрузка истории транзакций...');
+        function openModal(type) {
+            currentModalType = type;
+            document.getElementById('modal-title').innerText = type === 'deposit' ? 'Пополнить баланс' : 'Вывести средства';
+            document.getElementById('modal-desc').innerText = type === 'deposit' ? 'Введите сумму пополнения в USDT' : 'Введите сумму для вывода в USDT';
+            document.getElementById('modal-input').value = '';
+            document.getElementById('modal-container').classList.remove('hidden');
         }
-    }
-</script>
 
+        function closeModal() {
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        function confirmModalAction() {
+            let val = parseFloat(document.getElementById('modal-input').value);
+            if(isNaN(val) || val <= 0) {
+                alert('Введите корректную сумму');
+                return;
+            }
+            let currentBal = parseFloat(document.getElementById('main-balance').innerText);
+            if(currentModalType === 'withdraw' && val > currentBal) {
+                alert('Недостаточно средств на балансе');
+                return;
+            }
+
+            if(currentModalType === 'deposit') {
+                currentBal += val;
+                tg.showAlert(`Успешно! Баланс пополнен на ${val} USDT`);
+            } else {
+                currentBal -= val;
+                tg.showAlert(`Успешно! Создана заявка на вывод ${val} USDT`);
+            }
+
+            let formatted = currentBal.toFixed(4);
+            document.getElementById('main-balance').innerText = formatted;
+            document.getElementById('header-balance').innerText = formatted + ' USDT';
+            closeModal();
+        }
+
+        function startSwap(coin, amount, profit) {
+            let container = document.getElementById('active-operations-container');
+            container.className = "glass-card p-4 rounded-2xl space-y-2 text-left border border-white/20";
+            container.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="font-bold text-white">Связка: ${coin}</span>
+                    <span class="text-xs text-green-400 bg-green-950/50 px-2 py-0.5 rounded-full animate-pulse">В работе</span>
+                </div>
+                <div class="flex justify-between text-xs text-gray-400">
+                    <span>Сумма: ${amount}</span>
+                    <span>Ожидание: ${profit}</span>
+                </div>
+            `;
+            tg.HapticFeedback.notificationOccurred('success');
+            alert(`Операция по связке ${coin} успешно запущена!`);
+        }
+
+        function copyRefLink() {
+            let link = document.getElementById('ref-link').innerText;
+            navigator.clipboard.writeText(link);
+            tg.HapticFeedback.notificationOccurred('success');
+            alert('Реферальная ссылка скопирована в буфер обмена!');
+        }
+    </script>
 </body>
 </html>
-

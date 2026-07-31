@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wubix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000000; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-nav { background: rgba(20, 20, 20, 0.8); backdrop-filter: blur(20px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen pb-24">
+
+    <!-- Верхняя шапка -->
+    <header class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+        <div class="flex items-center space-x-2">
+            <span class="text-xl font-bold tracking-wider">Wubix</span>
+        </div>
+        <div class="bg-white/10 px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1">
+            <span class="text-gray-400">БАЛАНС</span>
+            <span class="text-white font-bold">164.6613 USDT</span>
+        </div>
+    </header>
+
+    <!-- Основной контент (Экраны) -->
+    <main class="flex-1 p-4 max-w-md mx-auto w-full">
+
+        <!-- ЭКРАН 1: КОШЕЛЕК -->
+        <div id="screen-wallet" class="space-y-4">
+            <div class="text-center py-4">
+                <p class="text-xs text-gray-400 uppercase tracking-widest mb-1">ВАШ БАЛАНС</p>
+                <h1 class="text-4xl font-extrabold tracking-tight">164.6613 <span class="text-xl text-gray-400 font-normal">USDT</span></h1>
+                <p class="text-xs text-gray-500 mt-1">UQtu...nedR</p>
+                <div class="inline-block mt-3 px-3 py-1 rounded-full glass-card text-xs text-gray-300">
+                    ● Wubix+
+                </div>
+            </div>
+
+            <!-- Статистика за 24ч -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass-card p-4 rounded-2xl">
+                    <p class="text-xl font-bold">24.66 USDT</p>
+                    <p class="text-xs text-gray-400 mt-1">Прибыль за 24ч</p>
+                </div>
+                <div class="glass-card p-4 rounded-2xl">
+                    <p class="text-xl font-bold text-green-400">+0.71%</p>
+                    <p class="text-xs text-gray-400 mt-1">Средний % прибыли</p>
+                </div>
+            </div>
+
+            <!-- Дневной лимит -->
+            <div class="glass-card p-4 rounded-2xl space-y-2">
+                <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                    <div class="bg-white h-full w-1/4"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-400">
+                    <span>Дневной лимит</span>
+                    <span>25 / 100</span>
+                </div>
+            </div>
+
+            <!-- Замороженные транзакции -->
+            <div class="bg-red-950/30 border border-red-500/20 p-4 rounded-2xl space-y-1">
+                <p class="text-sm font-medium text-red-400 flex items-center space-x-1">
+                    <span>❄️ Замороженные транзакции: 2 (321.3 USDT)</span>
+                </p>
+                <p class="text-xs text-red-300/70">Нажмите для просмотра → Для разморозки обратитесь в поддержку</p>
+            </div>
+
+            <!-- Кнопки действий -->
+            <button class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl transition hover:bg-gray-200">
+                Пополнить
+            </button>
+            <div class="grid grid-cols-2 gap-3">
+                <button class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">Вывести</button>
+                <button class="py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">Транзакции</button>
+            </div>
+            <button class="w-full py-3.5 glass-card font-medium rounded-2xl transition hover:bg-white/10">
+                История операций
+            </button>
+        </div>
+
+        <!-- ЭКРАН 2: СВЯЗКИ -->
+        <div id="screen-swaps" class="space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-2">Связки</h2>
+            <p class="text-xs text-gray-400 uppercase tracking-wider">ВЫБЕРИТЕ МОНЕТУ</p>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                    <div>
+                        <h3 class="text-lg font-bold">ETH</h3>
+                        <p class="text-xs text-gray-400 mt-1">1%-1.9%</p>
+                    </div>
+                    <span class="text-xs text-gray-500">200 USDT →</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                    <div>
+                        <h3 class="text-lg font-bold">SOL</h3>
+                        <p class="text-xs text-gray-400 mt-1">0.6%-1%</p>
+                    </div>
+                    <span class="text-xs text-gray-500">100 USDT →</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                    <div>
+                        <h3 class="text-lg font-bold">BNB</h3>
+                        <p class="text-xs text-gray-400 mt-1">0.5%-1%</p>
+                    </div>
+                    <span class="text-xs text-gray-500">100 USDT →</span>
+                </div>
+                <div class="glass-card p-4 rounded-2xl flex flex-col justify-between h-28 cursor-pointer hover:border-white/30">
+                    <div>
+                        <h3 class="text-lg font-bold">AAVE</h3>
+                        <p class="text-xs text-gray-400 mt-1">0.06%-0.3%</p>
+                    </div>
+                    <span class="text-xs text-gray-500">10 USDT →</span>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <p class="text-xs text-gray-400 uppercase tracking-wider mb-3">АКТИВНЫЕ ОПЕРАЦИИ</p>
+                <div class="text-center py-8 text-gray-500 text-sm">
+                    Нет активных операций
+                </div>
+            </div>
+        </div>
+
+        <!-- ЭКРАН 3: ПРОЧЕЕ / ПРОФИЛЬ -->
+        <div id="screen-more" class="space-y-4 hidden">
+            <h2 class="text-xl font-bold mb-4">Прочее</h2>
+            
+            <div class="glass-card rounded-2xl overflow-hidden divide-y divide-white/5">
+                <button onclick="openSub('refs')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                    <span class="text-sm font-medium">Рефералы</span>
+                    <span class="text-gray-500">›</span>
+                </button>
+                <button onclick="openSub('support')" class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                    <span class="text-sm font-medium">Поддержка</span>
+                    <span class="text-gray-500">›</span>
+                </button>
+                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                    <span class="text-sm font-medium">Информация</span>
+                    <span class="text-gray-500">›</span>
+                </button>
+                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                    <span class="text-sm font-medium">FAQ</span>
+                    <span class="text-gray-500">›</span>
+                </button>
+                <button class="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-white/5">
+                    <span class="text-sm font-medium">Замороженные операции</span>
+                    <span class="text-red-400 text-xs bg-red-950 px-2 py-0.5 rounded-full">2 ›</span>
+                </button>
+            </div>
+
+            <p class="text-xs text-gray-400 uppercase tracking-wider mt-6 mb-2">ПРОФИЛЬ</p>
+            <div class="glass-card p-4 rounded-2xl space-y-2 text-sm">
+                <div class="flex justify-between"><span class="text-gray-400">Имя</span> <span class="font-medium">YAMI @Xlebobulka</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">ID в системе</span> <span class="font-medium">#K05EX</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Telegram ID</span> <span class="font-medium">1271961395</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Статус</span> <span class="font-medium">Стандарт</span></div>
+            </div>
+        </div>
+
+        <!-- ПОДРАЗДЕЛ: РЕФЕРАЛЫ -->
+        <div id="sub-refs" class="space-y-4 hidden">
+            <button onclick="closeSub()" class="text-xs text-gray-400 mb-2 hover:text-white">‹ Назад</button>
+            <h2 class="text-xl font-bold">Рефералы</h2>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass-card p-4 rounded-2xl">
+                    <p class="text-xl font-bold">1</p>
+                    <p class="text-xs text-gray-400 mt-1">Рефералов</p>
+                </div>
+                <div class="glass-card p-4 rounded-2xl">
+                    <p class="text-xl font-bold">0</p>
+                    <p class="text-xs text-gray-400 mt-1">Бонус USDT</p>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl space-y-2">
+                <p class="text-xs text-gray-400 uppercase">РЕФЕРАЛЬНАЯ ССЫЛКА</p>
+                <p class="text-xs text-gray-300 break-all bg-black/30 p-2 rounded-xl">https://t.me/wubixcryptobot?start=ref_K05EX</p>
+            </div>
+
+            <button class="w-full py-3.5 bg-white text-black font-semibold rounded-2xl">Скопировать ссылку</button>
+            <button class="w-full py-3.5 glass-card font-medium rounded-2xl">Поделиться в Telegram</button>
+        </div>
+
+    </main>
+
+    <!-- Нижняя навигация -->
+    <nav class="fixed bottom-0 left-0 right-0 glass-nav py-2 px-6 flex justify-around items-center z-50">
+        <button onclick="switchTab('swaps')" id="nav-swaps" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white">
+            <span class="text-xs">Связки</span>
+        </button>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center space-y-1 text-white transition">
+            <span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Кошелёк</span>
+        </button>
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white">
+            <span class="text-xs">Прочее</span>
+        </button>
+    </nav>
+
+    <script>
+        function switchTab(tab) {
+            document.getElementById('screen-wallet').classList.add('hidden');
+            document.getElementById('screen-swaps').classList.add('hidden');
+            document.getElementById('screen-more').classList.add('hidden');
+            document.getElementById('sub-refs').classList.add('hidden');
+
+            document.getElementById('screen-' + tab).classList.remove('hidden');
+        }
+
+        function openSub(sub) {
+            document.getElementById('screen-more').classList.add('hidden');
+            if(sub === 'refs') {
+                document.getElementById('sub-refs').classList.remove('hidden');
+            }
+        }
+
+        function closeSub() {
+            document.getElementById('sub-refs').classList.add('hidden');
+            document.getElementById('screen-more').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

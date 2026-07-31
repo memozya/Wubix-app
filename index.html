@@ -43,7 +43,7 @@
             <!-- Статистика за 24ч -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="glass-card p-4 rounded-2xl">
-                    <p class="text-xl font-bold">24.66 USDT</p>
+                    <p class="text-xl font-bold" id="stat-profit-24h">24.66 USDT</p>
                     <p class="text-xs text-gray-400 mt-1">Прибыль за 24ч</p>
                 </div>
                 <div class="glass-card p-4 rounded-2xl">
@@ -66,7 +66,7 @@
             <!-- Замороженные транзакции -->
             <div onclick="openSub('frozen')" class="bg-red-950/30 border border-red-500/20 p-4 rounded-2xl space-y-1 cursor-pointer hover:border-red-500/40 transition">
                 <p class="text-sm font-medium text-red-400 flex items-center space-x-1">
-                    <span>❄️ Замороженные транзакции: 2 (321.3 USDT)</span>
+                    <span id="frozen-summary-text">❄️ Замороженные транзакции: 2 (321.3 USDT)</span>
                 </p>
                 <p class="text-xs text-red-300/70">Нажмите для просмотра → Для разморозки обратитесь в поддержку</p>
             </div>
@@ -245,11 +245,39 @@
         let tg = window.Telegram.WebApp;
         try { tg.expand(); } catch(e) {}
 
+        // Заполняем профиль из Telegram WebApp
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             document.getElementById('profile-name').innerText = `${user.first_name || ''} @${user.username || 'user'}`;
             document.getElementById('profile-tgid').innerText = user.id;
         }
+
+        // Автоматическая загрузка данных из бэкенда бота
+        document.addEventListener("DOMContentLoaded", async () => {
+            const tgId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) ? tg.initDataUnsafe.user.id : 1271961395;
+            
+            try {
+                // Замените URL на адрес вашего сервера/бота при деплое
+                let response = await fetch(`http://127.0.0.1:8000/api/user/${tgId}`);
+                if (response.ok) {
+                    let data = await response.json();
+                    
+                    if (data.balance !== undefined) {
+                        let formatted = data.balance.toFixed(4);
+                        document.getElementById('main-balance').innerText = formatted;
+                        document.getElementById('header-balance').innerText = formatted + ' USDT';
+                    }
+                    if (data.profit_24h !== undefined) {
+                        document.getElementById('stat-profit-24h').innerText = data.profit_24h;
+                    }
+                    if (data.frozen_count !== undefined && data.frozen_sum !== undefined) {
+                        document.getElementById('frozen-summary-text').innerText = `❄️ Замороженные транзакции: ${data.frozen_count} (${data.frozen_sum})`;
+                    }
+                }
+            } catch (error) {
+                console.log("Бэкенд недоступен, используются локальные данные по умолчанию.");
+            }
+        });
 
         let currentModalType = '';
         let activeTabName = 'wallet';
@@ -318,7 +346,6 @@
             document.getElementById('sub-frozen').classList.add('hidden');
             document.getElementById('sub-generic').classList.add('hidden');
             
-            // Возвращаем пользователя туда, откуда он пришел
             document.getElementById('screen-' + activeTabName).classList.remove('hidden');
         }
 

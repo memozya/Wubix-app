@@ -1,2 +1,0 @@
-# Wubix-app
-.

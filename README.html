@@ -1,3 +1,4 @@
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -224,5 +225,47 @@
             document.getElementById('screen-more').classList.remove('hidden');
         }
     </script>
+    <script>
+    // Инициализация Telegram Web App
+    const tg = window.Telegram.WebApp;
+    tg.expand(); // Разворачиваем на весь экран
+
+    // Пример получения реальных данных пользователя из Telegram
+    const user = tg.initDataUnsafe?.user;
+    if (user) {
+        console.log("Пользователь авторизован:", user.first_name);
+    }
+
+    // Логика переключения экранов по нижнему меню
+    function switchScreen(screenId, element) {
+        // Скрываем все экраны
+        document.querySelectorAll('main > div').forEach(div => {
+            div.classList.add('hidden');
+        });
+        
+        // Показываем нужный экран
+        document.getElementById(screenId).classList.remove('hidden');
+
+        // Управляем активной подсветкой кнопок в нижнем меню
+        document.querySelectorAll('nav button').forEach(btn => {
+            btn.classList.remove('text-white', 'bg-white/10');
+            btn.classList.add('text-gray-400');
+        });
+        element.classList.remove('text-gray-400');
+        element.classList.add('text-white', 'bg-white/10');
+    }
+
+    // Пример функции для реального пополнения или клика по кнопкам
+    function handleActionButton(actionType) {
+        if (actionType === 'deposit') {
+            tg.showAlert('Переход на шлюз оплаты...');
+            // Здесь можно сделать запрос на твой сервер для генерации инвойса
+        } else if (actionType === 'transactions') {
+            tg.HapticFeedback.impactOccurred('medium'); // Легкая вибрация телефона при клике
+            alert('Загрузка истории транзакций...');
+        }
+    }
+</script>
+
 </body>
 </html>

@@ -199,12 +199,12 @@
                 </div>
                 <div class="glass-card p-4 rounded-2xl space-y-1 border border-red-500/30">
                     <div class="flex justify-between"><span class="font-bold">TX #9822</span><span class="text-red-400">141.3 USDT</span></div>
-                    <p class="text-xs text-gray-400">Статус: Подоззрение на риск</p>
+                    <p class="text-xs text-gray-400">Статус: Подозрение на риск</p>
                 </div>
             </div>
         </div>
 
-        <!-- ПОДРАЗДЕЛ: ПОДДЕРЖКА / ИНФО / FAQ / ИСТОРИЯ -->
+        <!-- ПОДРАЗДЕЛ: ОБЩИЙ ДЛЯ ИНФО / ПОДДЕРЖКИ / FAQ -->
         <div id="sub-generic" class="space-y-4 hidden">
             <button onclick="closeSub()" class="text-xs text-gray-400 mb-2 hover:text-white">‹ Назад</button>
             <h2 id="generic-title" class="text-xl font-bold">Раздел</h2>
@@ -219,35 +219,33 @@
     <div id="modal-container" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="glass-card w-full max-w-xs p-5 rounded-3xl space-y-4">
             <h3 id="modal-title" class="text-lg font-bold">Пополнение</h3>
-            <p id="modal-desc" class="text-xs text-gray-400">Введите сумму для пополнения счета (USDT)</p>
+            <p id="modal-desc" class="text-xs text-gray-400">Введите сумму</p>
             <input type="number" id="modal-input" placeholder="0.00" class="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white text-lg focus:outline-none focus:border-white/30">
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="closeModal()" class="py-3 glass-card font-medium rounded-xl text-sm">Отмена</button>
-                <button onclick="confirmModalAction()" class="py-3 bg-white text-black font-semibold rounded-xl text-sm">Подтвердить</button>
+                <button onclick="confirmModalAction()" class="py-3 bg-white text-black font-semibold rounded-xl text-sm">ОК</button>
             </div>
         </div>
     </div>
 
     <!-- Нижняя навигация -->
     <nav class="fixed bottom-0 left-0 right-0 glass-nav py-2 px-6 flex justify-around items-center z-50">
-        <button onclick="switchTab('swaps')" id="nav-swaps" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4">
+        <button onclick="switchTab('swaps')" id="nav-swaps" class="flex flex-col items-center space-y-1 text-gray-400 transition py-1 px-4">
             <span class="text-xs">Связки</span>
         </button>
-        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center space-y-1 text-white transition py-1">
-            <span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium" id="nav-wallet-pill">Кошелёк</span>
+        <button onclick="switchTab('wallet')" id="nav-wallet" class="flex flex-col items-center space-y-1 text-white transition py-1 px-4">
+            <span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Кошелёк</span>
         </button>
-        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4">
+        <button onclick="switchTab('more')" id="nav-more" class="flex flex-col items-center space-y-1 text-gray-400 transition py-1 px-4">
             <span class="text-xs">Прочее</span>
         </button>
     </nav>
 
     <script>
-        // Инициализация Telegram Web App
         let tg = window.Telegram.WebApp;
-        tg.expand();
+        try { tg.expand(); } catch(e) {}
 
-        // Подставляем реальные данные юзера Telegram, если они есть
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
             const user = tg.initDataUnsafe.user;
             document.getElementById('profile-name').innerText = `${user.first_name || ''} @${user.username || 'user'}`;
             document.getElementById('profile-tgid').innerText = user.id;
@@ -258,6 +256,8 @@
 
         function switchTab(tab) {
             activeTabName = tab;
+            
+            // Скрываем всё
             document.getElementById('screen-wallet').classList.add('hidden');
             document.getElementById('screen-swaps').classList.add('hidden');
             document.getElementById('screen-more').classList.add('hidden');
@@ -265,22 +265,18 @@
             document.getElementById('sub-frozen').classList.add('hidden');
             document.getElementById('sub-generic').classList.add('hidden');
 
+            // Показываем нужный экран
             document.getElementById('screen-' + tab).classList.remove('hidden');
 
-            // Стилизация кнопок навигации
+            // Обновляем подсветку кнопок навигации
             ['swaps', 'wallet', 'more'].forEach(t => {
                 let btn = document.getElementById('nav-' + t);
+                let name = t === 'swaps' ? 'Связки' : (t === 'wallet' ? 'Кошелёк' : 'Прочее');
+                
                 if(t === tab) {
-                    if(t === 'wallet') {
-                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Кошелёк</span>';
-                    } else if(t === 'swaps') {
-                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Связки</span>';
-                    } else {
-                        btn.innerHTML = '<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">Прочее</span>';
-                    }
-                    btn.className = "flex flex-col items-center space-y-1 text-white transition py-1";
+                    btn.innerHTML = `<span class="text-xs bg-white/10 px-4 py-1.5 rounded-full border border-white/10 font-medium">${name}</span>`;
+                    btn.className = "flex flex-col items-center space-y-1 text-white transition py-1 px-4";
                 } else {
-                    let name = t === 'swaps' ? 'Связки' : (t === 'wallet' ? 'Кошелёк' : 'Прочее');
                     btn.innerHTML = `<span class="text-xs">${name}</span>`;
                     btn.className = "flex flex-col items-center space-y-1 text-gray-400 transition hover:text-white py-1 px-4";
                 }
@@ -290,6 +286,7 @@
         function openSub(sub) {
             document.getElementById('screen-more').classList.add('hidden');
             document.getElementById('screen-wallet').classList.add('hidden');
+            document.getElementById('screen-swaps').classList.add('hidden');
             
             if(sub === 'refs') {
                 document.getElementById('sub-refs').classList.remove('hidden');
@@ -301,13 +298,13 @@
                 
                 if(sub === 'support') {
                     title.innerText = 'Поддержка';
-                    content.innerHTML = '<p>По всем вопросам обращайтесь к официальному оператору:</p><p class="text-white font-bold">@wubix_support</p>';
+                    content.innerHTML = '<p>По всем вопросам обращайтесь к оператору:</p><p class="text-white font-bold">@wubix_support</p>';
                 } else if(sub === 'info') {
                     title.innerText = 'Информация';
-                    content.innerHTML = '<p>Wubix — автоматизированный сервис для проведения арбитражных криптовалютных связок нового поколения.</p>';
+                    content.innerHTML = '<p>Wubix — автоматизированный сервис для проведения криптовалютных арбитражных связок.</p>';
                 } else if(sub === 'faq') {
                     title.innerText = 'FAQ';
-                    content.innerHTML = '<p class="font-bold text-white">Как начать работу?</p><p>Выберите связку во вкладке "Связки", следуйте инструкциям и запустите операцию.</p>';
+                    content.innerHTML = '<p class="font-bold text-white">Как начать работу?</p><p>Выберите связку во вкладке "Связки" и запустите операцию.</p>';
                 } else if(sub === 'transactions' || sub === 'history') {
                     title.innerText = 'История операций';
                     content.innerHTML = '<div class="space-y-2"><div class="flex justify-between border-b border-white/5 pb-2"><span>Пополнение</span><span class="text-green-400">+100 USDT</span></div><div class="flex justify-between pb-2"><span>Связка ETH</span><span class="text-green-400">+3.4 USDT</span></div></div>';
@@ -321,11 +318,8 @@
             document.getElementById('sub-frozen').classList.add('hidden');
             document.getElementById('sub-generic').classList.add('hidden');
             
-            if(activeTabName === 'wallet') {
-                document.getElementById('screen-wallet').classList.remove('hidden');
-            } else {
-                document.getElementById('screen-more').classList.remove('hidden');
-            }
+            // Возвращаем пользователя туда, откуда он пришел
+            document.getElementById('screen-' + activeTabName).classList.remove('hidden');
         }
 
         function openModal(type) {
@@ -348,16 +342,16 @@
             }
             let currentBal = parseFloat(document.getElementById('main-balance').innerText);
             if(currentModalType === 'withdraw' && val > currentBal) {
-                alert('Недостаточно средств на балансе');
+                alert('Недостаточно средств');
                 return;
             }
 
             if(currentModalType === 'deposit') {
                 currentBal += val;
-                tg.showAlert(`Успешно! Баланс пополнен на ${val} USDT`);
+                alert(`Баланс пополнен на ${val} USDT`);
             } else {
                 currentBal -= val;
-                tg.showAlert(`Успешно! Создана заявка на вывод ${val} USDT`);
+                alert(`Заявка на вывод ${val} USDT создана`);
             }
 
             let formatted = currentBal.toFixed(4);
@@ -372,22 +366,20 @@
             container.innerHTML = `
                 <div class="flex justify-between items-center">
                     <span class="font-bold text-white">Связка: ${coin}</span>
-                    <span class="text-xs text-green-400 bg-green-950/50 px-2 py-0.5 rounded-full animate-pulse">В работе</span>
+                    <span class="text-xs text-green-400 bg-green-950/50 px-2 py-0.5 rounded-full">В работе</span>
                 </div>
                 <div class="flex justify-between text-xs text-gray-400">
                     <span>Сумма: ${amount}</span>
                     <span>Ожидание: ${profit}</span>
                 </div>
             `;
-            tg.HapticFeedback.notificationOccurred('success');
-            alert(`Операция по связке ${coin} успешно запущена!`);
+            alert(`Связка ${coin} успешно запущена!`);
         }
 
         function copyRefLink() {
             let link = document.getElementById('ref-link').innerText;
             navigator.clipboard.writeText(link);
-            tg.HapticFeedback.notificationOccurred('success');
-            alert('Реферальная ссылка скопирована в буфер обмена!');
+            alert('Реферальная ссылка скопирована!');
         }
     </script>
 </body>
